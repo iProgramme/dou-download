@@ -47,11 +47,11 @@ def _parse_video_count(output_lines):
     """Try to extract video download count from f2 stdout."""
     count = 0
     for line in output_lines:
-        # f2 output patterns: look for download completion indicators
-        if "下载完成" in line or "download" in line.lower():
+        # f2 uses "[  完成  ]" for each completed download
+        if "[  完成  ]" in line or "完成" in line:
             count += 1
-        # Also match patterns like "共 X 个" or "Total: X"
-        m = re.search(r"共\s*(\d+)\s*个", line)
+        # Also match "共处理 X 个作品" or "共 X 个"
+        m = re.search(r"共(?:处理)?\s*(\d+)\s*个", line)
         if m:
             count = max(count, int(m.group(1)))
     return count

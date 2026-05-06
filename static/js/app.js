@@ -77,6 +77,7 @@ const downloadUrl = document.getElementById('download-url');
 const btnDownload = document.getElementById('btn-download');
 const statusCard = document.getElementById('status-card');
 const statusText = document.getElementById('status-text');
+const statusSpinner = document.querySelector('.status-running .spinner');
 const logOutput = document.getElementById('log-output');
 let statusTimer = null;
 
@@ -91,12 +92,14 @@ btnDownload.addEventListener('click', async () => {
     statusCard.style.display = 'block';
     logOutput.innerHTML = '';
     statusText.textContent = '正在启动...';
+    statusSpinner.style.display = 'block';
 
     const res = await api('POST', '/api/download', { url });
     if (!res.ok) {
         showToast(res.message || '启动失败', 'error');
         btnDownload.disabled = false;
         btnDownload.textContent = '开始下载';
+        statusSpinner.style.display = 'none';
         return;
     }
 
@@ -120,6 +123,7 @@ function startStatusPoll() {
             statusTimer = null;
             btnDownload.disabled = false;
             btnDownload.textContent = '开始下载';
+            statusSpinner.style.display = 'none';
             statusText.textContent = data.progress || '完成';
         }
     }, 1000);
