@@ -84,8 +84,9 @@ def run_download(user_input):
         f2_path = get_f2_path()
         cmd = [f2_path, "dy", "-u", url, "-p", download_path, "-k", cookie, "-M", "post"]
 
+        # Set cwd to download_path so f2 can create its logs dir in a writable location
         process = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=download_path
         )
 
         output_lines = []
