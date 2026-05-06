@@ -1,0 +1,56 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            artifact_name: DouyinDownloader-Mac
+            add_data_sep: ":"
+            hidden_import: webview.platforms.cocoa
+          - os: windows-latest
+            artifact_name: DouyinDownloader-Windows
+            add_data_sep: ";"
+            hidden_import: webview.platforms.edgechromium
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Build with PyInstaller
+        run: >
+          python -m PyInstaller
+          --name "DouyinDownloader"
+          --onedir
+          --windowed
+          --add-data "static${{ matrix.add_data_sep }}static"
+          --add-data "templates${{ matrix.add_data_sep }}templates"
+          --add-data "download_user.py${{ matrix.add_data_sep }}."
+          --hidden-import "webview"
+          --hidden-import "${{ matrix.hidden_import }}"
+          --hidden-import "apscheduler.schedulers.background"
+          --hidden-import "apscheduler.triggers.interval"
+          --noconfirm
+          app.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/DouyinDownloader/
+          retention-days: 30

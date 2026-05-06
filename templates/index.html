@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抖音视频下载器</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>Douyin DL</h1>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active" data-page="download">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>下载</span>
+                </li>
+                <li class="nav-item" data-page="tasks">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>定时任务</span>
+                </li>
+                <li class="nav-item" data-page="history">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>历史记录</span>
+                </li>
+                <li class="nav-item" data-page="settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                    <span>设置</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Download Page -->
+            <section class="page active" id="page-download">
+                <h2>下载视频</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <input type="text" id="download-url" placeholder="输入博主主页链接或用户 ID，例如: https://www.douyin.com/user/MS4wLjABAAAA..." />
+                        <button id="btn-download" class="btn btn-primary">开始下载</button>
+                    </div>
+                    <p class="hint">支持完整链接或用户 ID。下载会保存到设置中配置的路径。</p>
+                </div>
+                <div class="card status-card" id="status-card" style="display:none;">
+                    <h3>下载状态</h3>
+                    <div class="status-running" id="status-area">
+                        <div class="spinner"></div>
+                        <span id="status-text">准备中...</span>
+                    </div>
+                    <div class="log-output" id="log-output"></div>
+                </div>
+            </section>
+
+            <!-- Tasks Page -->
+            <section class="page" id="page-tasks">
+                <div class="page-header">
+                    <h2>定时任务</h2>
+                    <button class="btn btn-primary" id="btn-new-task">+ 新建任务</button>
+                </div>
+                <div id="task-list" class="card-list">
+                    <p class="empty-hint">暂无定时任务，点击右上角新建。</p>
+                </div>
+            </section>
+
+            <!-- History Page -->
+            <section class="page" id="page-history">
+                <h2>历史记录</h2>
+                <div id="history-list" class="card-list">
+                    <p class="empty-hint">暂无下载记录。</p>
+                </div>
+                <div class="pagination" id="history-pagination"></div>
+            </section>
+
+            <!-- Settings Page -->
+            <section class="page" id="page-settings">
+                <h2>设置</h2>
+                <div class="card">
+                    <h3>Cookie 配置</h3>
+                    <div class="cookie-guide">
+                        <p><strong>获取方法：</strong></p>
+                        <ol>
+                            <li>用浏览器打开 <a href="https://www.douyin.com" target="_blank">douyin.com</a> 并登录</li>
+                            <li>按 <kbd>F12</kbd> 打开开发者工具</li>
+                            <li>切换到 <strong>Network（网络）</strong> 标签</li>
+                            <li>刷新页面，点击任意一个请求</li>
+                            <li>在 <strong>Request Headers</strong> 中找到 <code>cookie</code> 字段</li>
+                            <li>复制整段 cookie 值粘贴到下方</li>
+                        </ol>
+                    </div>
+                    <textarea id="setting-cookie" rows="6" placeholder="粘贴你的 Cookie 到这里..."></textarea>
+                </div>
+                <div class="card">
+                    <h3>下载路径</h3>
+                    <div class="input-group">
+                        <input type="text" id="setting-path" placeholder="下载保存路径" />
+                        <button class="btn btn-secondary" id="btn-browse">选择文件夹</button>
+                    </div>
+                    <p class="hint">更多工具联系微信：teachAIGC</p>
+                </div>
+                <div class="card" style="text-align:right;">
+                    <button class="btn btn-primary" id="btn-save-settings">保存设置</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- New Task Modal -->
+    <div class="modal-overlay" id="modal-overlay" style="display:none;">
+        <div class="modal">
+            <h3>新建定时任务</h3>
+            <div class="form-group">
+                <label>博主链接或用户 ID</label>
+                <input type="text" id="task-url" placeholder="https://www.douyin.com/user/..." />
+            </div>
+            <div class="form-group">
+                <label>下载间隔（小时）</label>
+                <input type="number" id="task-interval" value="6" min="1" />
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="btn-cancel-task">取消</button>
+                <button class="btn btn-primary" id="btn-confirm-task">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
