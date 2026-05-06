@@ -14,12 +14,10 @@ jobs:
             artifact_name: DouyinDownloader-Mac
             add_data_sep: ":"
             hidden_import: webview.platforms.cocoa
-            artifact_path: dist/DouyinDownloader.app
           - os: windows-latest
             artifact_name: DouyinDownloader-Windows
             add_data_sep: ";"
             hidden_import: webview.platforms.edgechromium
-            artifact_path: dist/DouyinDownloader
 
     runs-on: ${{ matrix.os }}
 
@@ -54,9 +52,26 @@ jobs:
         if: runner.os == 'macOS'
         run: codesign --force --deep -s - dist/DouyinDownloader.app
 
-      - name: Upload artifact
+      - name: Zip macOS app
+        if: runner.os == 'macOS'
+        run: cd dist && ditto -c -k --sequesterRsrc --keepParent DouyinDownloader.app DouyinDownloader-Mac.zip
+
+      - name: Zip Windows build
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path dist\DouyinDownloader\* -DestinationPath dist\DouyinDownloader-Windows.zip
+
+      - name: Upload macOS artifact
+        if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
-          path: ${{ matrix.artifact_path }}
+          name: DouyinDownloader-Mac
+          path: dist/DouyinDownloader-Mac.zip
+          retention-days: 30
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: DouyinDownloader-Windows
+          path: dist/DouyinDownloader-Windows.zip
           retention-days: 30
