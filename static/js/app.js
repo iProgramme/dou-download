@@ -289,5 +289,17 @@ function escapeHtml(str) {
 
 // --- Init ---
 
+async function checkHealth() {
+    try {
+        const data = await api('GET', '/api/health');
+        if (!data.f2_ok) {
+            const el = document.getElementById('f2-warning');
+            document.getElementById('f2-warning-text').textContent = data.f2_error;
+            el.style.display = 'block';
+        }
+    } catch (e) { /* ignore */ }
+}
+
+checkHealth();
 loadSettings();
 loadHistory();

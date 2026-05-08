@@ -108,7 +108,7 @@ def run_download(user_input):
             return False, 0, msg
 
     except FileNotFoundError:
-        return False, 0, "未找到 f2 命令，请先安装: pip install f2"
+        return False, 0, "未找到 f2 下载引擎，请在终端运行: pip install f2，然后重启应用"
     except Exception as e:
         return False, 0, str(e)
     finally:

@@ -101,6 +101,27 @@ body {
     padding: 32px 40px;
 }
 
+.alert {
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.alert-error {
+    background: #fff2f0;
+    border: 1px solid #ffccc7;
+    color: #a8071a;
+}
+
+.alert-error code {
+    background: #ffccc7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
 .page {
     display: none;
     max-width: 800px;

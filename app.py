@@ -18,6 +18,12 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/api/health")
+def health():
+    f2_err = check_f2()
+    return jsonify({"f2_ok": f2_err is None, "f2_error": f2_err or ""})
+
+
 # --- Settings API ---
 
 @app.route("/api/settings", methods=["GET"])
@@ -165,9 +171,31 @@ class Api:
 
 # --- Main ---
 
+def check_f2():
+    """Check if f2 CLI is available. Returns error message or None."""
+    import shutil
+    if shutil.which("f2"):
+        return None
+    # Also check common paths (same as downloader.get_f2_path)
+    possible_paths = [
+        os.path.expanduser("~/.local/bin/f2"),
+        "/usr/local/bin/f2",
+        os.path.join(sys.prefix, "bin", "f2"),
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/f2",
+    ]
+    for p in possible_paths:
+        if os.path.exists(p):
+            return None
+    return "未找到 f2 下载引擎。请在终端运行: pip install f2"
+
+
 def main():
     database.init_db()
     scheduler.init_scheduler()
+
+    f2_err = check_f2()
+    if f2_err:
+        print(f"⚠️  {f2_err}")
 
     if "--no-gui" in sys.argv:
         port = int(os.environ.get("PORT", 5000))
